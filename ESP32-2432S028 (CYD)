@@ -1,0 +1,74 @@
+# ESP32-2432S028 (CYD) example for LCD with Micro USB and USB C connectors
+#LCD is an ili9xxx
+#Touch is an XPT2046
+
+i2c:
+  - sda: 27
+    scl: 22
+
+# Backlight
+output:
+  - platform: ledc
+    pin: 21
+    frequency: 1000hz
+    id: gpio_backlight_pwm
+#Backlight as a light object
+light:
+  - platform: monochromatic
+    output: gpio_backlight_pwm
+    name: Display Backlight
+    id: display_backlight
+    restore_mode: ALWAYS_ON
+
+# SPI bus for Touch and LCD
+spi:
+  - id: tft
+    clk_pin: 14
+    mosi_pin: 13
+    miso_pin:
+      number: 12
+      ignore_strapping_warning: true
+
+  - id: touch
+    clk_pin: 25
+    mosi_pin: 32
+    miso_pin: 39
+
+touchscreen:
+  - id: main_touchscreen
+    platform: xpt2046
+    display: main_display
+    spi_id: touch
+    cs_pin: 33
+    interrupt_pin: 36
+    threshold: 400
+    calibration:
+      x_min: 280
+      x_max: 3860
+      y_min: 340
+      y_max: 3860
+#Transform so I could run this at 90 degrees. Adjust to suit
+    transform:
+      mirror_x: true
+      mirror_y: true
+      swap_xy: true
+
+display:
+  - id: main_display
+    platform: ili9xxx
+    model: ILI9341
+    color_order: RGB
+    spi_id: tft
+    cs_pin:
+      number: 15
+      ignore_strapping_warning: true
+    dc_pin:
+      number: 2
+      ignore_strapping_warning: true
+    invert_colors: false
+    update_interval: never
+    auto_clear_enabled: false
+    dimensions:
+      height: 240
+      width: 320
+    rotation: 0
