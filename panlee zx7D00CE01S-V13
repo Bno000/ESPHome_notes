@@ -1,0 +1,65 @@
+# panlee zx7D00CE01S-V13 7" serial touch screen 
+
+
+#ESP32 custom options
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240: "y"
+      CONFIG_ESP32S3_DATA_CACHE_64KB: "y"
+      CONFIG_SPIRAM_FETCH_INSTRUCTIONS: y
+      CONFIG_SPIRAM_RODATA: y
+
+
+# Initialise PSRAM
+psram:
+  mode: octal
+  speed: 80MHz
+
+# LCD driver config
+
+#Display Config
+display:
+  - platform: rpi_dpi_rgb
+    id: disp0
+    data_pins:
+      red: [10, 11, 12, 13, 14]
+      green: [21, 0, 46, 3, 8, 18]
+      blue: [17, 16, 15, 7, 6]
+    de_pin: 39
+    hsync_pin: 5
+    vsync_pin: 38
+    pclk_pin: 9
+    hsync_front_porch: 20
+    hsync_pulse_width: 1
+    hsync_back_porch: 87
+    vsync_front_porch: 5
+    vsync_pulse_width: 1
+    vsync_back_porch: 31
+    pclk_inverted: true
+    pclk_frequency: 20MHz
+    color_order: RGB
+    auto_clear_enabled: false
+    update_interval: never
+    dimensions:
+      width: 800
+      height: 480
+
+
+#I2C bus required for GT911 touch
+
+i2c:
+  scan: False
+  scl: 47
+  sda: 48
+  frequency: 400000
+  setup_priority: 1000
+
+touchscreen:
+  - platform: gt911
+    setup_priority: 20
+    address: 0x5D
+
