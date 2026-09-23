@@ -1,0 +1,48 @@
+# Wireless Tag WT32-SC01_V3.3
+
+# Backlight output pin
+output:
+  - platform: gpio
+    pin:
+      number: GPIO23
+    id: backlight_output
+  
+
+
+# Backlight light object
+light:
+  - platform: binary
+    output: backlight_output
+    name: LCD Backlight
+    id: led
+    restore_mode: ALWAYS_ON
+
+spi:
+  clk_pin: GPIO14
+  mosi_pin: GPIO13
+  miso_pin: GPIO12
+
+display:
+  - platform: ili9xxx
+    model: ST7796
+    id: lcd_display
+    cs_pin: GPIO15
+    dc_pin: GPIO21
+    reset_pin: GPIO22
+    rotation: 0
+    invert_colors: false
+    auto_clear_enabled: false
+    update_interval: never
+
+i2c:
+  id: i2c_bus_intern
+  sda: 18
+  scl: 19
+  scan: false
+
+touchscreen:
+  - platform: ft63x6
+    id: lcd_touch
+    i2c_id: i2c_bus_intern
+
+    
